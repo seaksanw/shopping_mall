@@ -164,19 +164,30 @@ class _AuthenState extends State<Authen> {
     );
   }
 
+  Widget showToCreateNewAcc() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ShowTitle(title: 'Non user?', textStyle: MyConstant().h3Style()),
+        createNewAccButton()
+      ],
+    );
+  }
+
   Widget createNewAccButton() {
     return TextButton(
       child: Text(
-        'I want to Create a new user.',
+        'Create user',
         style: TextStyle(color: MyConstant.light, fontSize: 15),
       ),
       onPressed: () {
-        MaterialPageRoute materialPageRoute =
-            MaterialPageRoute(builder: (context) {
-          return CreateAccount();
-        });
-        Navigator.of(context).push(materialPageRoute);
+        // MaterialPageRoute materialPageRoute =
+        //     MaterialPageRoute(builder: (context) {
+        //   return CreateAccount();
+        // });
+        // Navigator.of(context).push(materialPageRoute);
         print('Authen page : ----> Creat new account was pressed.');
+        Navigator.of(context).pushNamed(MyConstant.routeCreateAccount);
       },
     );
   }
@@ -201,7 +212,7 @@ class _AuthenState extends State<Authen> {
                   ),
                   showField(size),
                   loginButton(size),
-                  createNewAccButton(),
+                  showToCreateNewAcc(),
                 ],
               ),
             ),
