@@ -14,7 +14,7 @@ class _CreateAccountState extends State<CreateAccount> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: MyConstant.dark,
-        title: Text('ลงทะเบียนสมัคร'),
+        title: Text('Register new Account'),
       ),
       body: Container(
         child: Text('กรอกข้อมูลเพื่อสมัคร'),
