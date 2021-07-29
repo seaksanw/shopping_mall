@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'package:shopping_mall/states/create_account.dart';
 import 'package:shopping_mall/utility/my_constant.dart';
 import 'package:shopping_mall/widgets/show_image.dart';
 import 'package:shopping_mall/widgets/show_title.dart';
@@ -47,37 +46,10 @@ class _AuthenState extends State<Authen> {
   Widget userField() {
     return TextFormField(
       style: TextStyle(color: MyConstant.primary, fontSize: 15),
-      decoration: InputDecoration(
-        prefixIcon: Icon(
-          Icons.account_circle,
-          color: MyConstant.dark,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: MyConstant.dark),
-          borderRadius: BorderRadius.circular(30),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: MyConstant.light),
-          borderRadius: BorderRadius.circular(30),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: MyConstant.light),
-          borderRadius: BorderRadius.circular(30),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: MyConstant.light),
-          borderRadius: BorderRadius.circular(30),
-        ),
-        // icon: Icon(
-        //   Icons.face,
-        //   size: 36,
-        //   color: MyConstant.dark,
-        // ),
-        labelText: 'User:',
-        labelStyle: MyConstant().h3Style(),
-        hintText: 'Enter user account',
-        hintStyle: TextStyle(color: MyConstant.light, fontSize: 15),
-      ),
+      decoration: MyConstant().myInputDecoration(
+          label: 'User',
+          hint: 'Enter user account',
+          icons: Icons.account_circle),
       validator: RequiredValidator(errorText: 'ต้องใส่ข้อมูล'),
       onSaved: (value) {
         userStr = value;
@@ -126,11 +98,6 @@ class _AuthenState extends State<Authen> {
           borderSide: BorderSide(color: MyConstant.light),
           borderRadius: BorderRadius.circular(30),
         ),
-        // icon: Icon(
-        //   Icons.lock,
-        //   size: 36,
-        //   color: MyConstant.dark,
-        // ),
         labelText: 'Password:',
         labelStyle: MyConstant().h3Style(),
         hintText: 'Enter your password',
