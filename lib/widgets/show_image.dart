@@ -6,9 +6,10 @@ class ShowImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.6,
-      child: Image.asset(pathImage),
-    );
+    return Image.asset(pathImage);
+    // return Container(
+    //    width: MediaQuery.of(context).size.width * 0.6,
+    //   child: Image.asset(pathImage),
+    // );
   }
 }

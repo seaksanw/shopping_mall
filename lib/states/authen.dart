@@ -1,6 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shopping_mall/models/account_data.dart';
 import 'package:shopping_mall/utility/my_constant.dart';
+import 'package:shopping_mall/utility/my_dialog.dart';
 import 'package:shopping_mall/widgets/show_image.dart';
 import 'package:shopping_mall/widgets/show_title.dart';
 
@@ -16,7 +23,9 @@ class _AuthenState extends State<Authen> {
   final formKey = GlobalKey<FormState>();
   String? userStr, passwordStr;
   Widget showLogo() {
-    return ShowImage(pathImage: MyConstant.image4);
+    return Container(
+        width: MediaQuery.of(context).size.width * 0.7,
+        child: ShowImage(pathImage: MyConstant.image4));
   }
 
   Widget showAppName() {
@@ -110,6 +119,65 @@ class _AuthenState extends State<Authen> {
     );
   }
 
+  Future<void> userAuthen({String? user, String? password}) async {
+    //String alertMassage = 'ERR:0001';
+    String urlString =
+        '${MyConstant.serverAddr}/shoppingmall/getUserWhereUser.php?isAdd=true&user=$user'; //192.168.1.109
+    try {
+      await Dio().get(urlString).then((value) async {
+        print(value);
+        if (value.toString() != 'null') {
+          //ต้องแปลงเป็น string (หรือใช้ value.data != 'null') แล้ว check กับ string 'null' ไม่ใช่ null
+          print('Has User data');
+          var jsonData = json.decode(value.toString())[0];
+          AccountData accountData = AccountData.formatFromJason(jsonData);
+          print('password : ${jsonData['password']}');
+          if (password == jsonData['password']) {
+            print(accountData);
+            //Navigator.pushNamed(context, MyConstant.routeBuyerService);
+
+            SharedPreferences preferences =
+                await SharedPreferences.getInstance();
+            preferences.setString('type', accountData.userType.toString());
+            preferences.setString('user', accountData.user.toString());
+
+            switch (accountData.userType) {
+              case 'buyer':
+                Navigator.pushNamedAndRemoveUntil(
+                    context, MyConstant.routeBuyerService, (route) => false);
+                break;
+              case 'seller':
+                Navigator.pushNamedAndRemoveUntil(
+                    context, MyConstant.routeSellerService, (route) => false);
+                break;
+              case 'rider':
+                Navigator.pushNamedAndRemoveUntil(
+                    context, MyConstant.routeRiderService, (route) => false);
+                break;
+              default:
+                MyDialog().normalShowDialog(
+                    context, "Invalid user type", 'Please,contact Your admin');
+                break;
+            }
+          } else {
+            //alertMassage = 'Password is invalid';
+            MyDialog()
+                .normalShowDialog(context, 'Login fail', 'Password is invalid');
+          }
+        } else {
+          print('Don\'t have User data');
+          //alertMassage = 'User\'s not found';
+          MyDialog()
+              .normalShowDialog(context, 'Login fail', 'User\'s not found');
+        }
+      });
+    } on DioError catch (e) {
+      print('authen------>throw exception');
+      print(e.message);
+      MyDialog().normalShowDialog(context, 'Connection fail', e.message);
+    }
+  }
+
   Widget loginButton(double size) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 50),
@@ -118,13 +186,15 @@ class _AuthenState extends State<Authen> {
       child: ElevatedButton.icon(
         icon: Icon(Icons.login),
         label: Text(
-          'L O G I N',
+          'LOGIN',
+          style: TextStyle(letterSpacing: 5.0),
         ),
         style: MyConstant().myButtonStyle(),
         onPressed: () {
           if (formKey.currentState!.validate()) {
             formKey.currentState!.save();
             print('USER : $userStr  ,   PASSWORD : $passwordStr');
+            userAuthen(user: userStr, password: passwordStr);
           }
         },
       ),
@@ -144,7 +214,7 @@ class _AuthenState extends State<Authen> {
   Widget createNewAccButton() {
     return TextButton(
       child: Text(
-        'Create user',
+        'Click Here!',
         style: TextStyle(color: MyConstant.light, fontSize: 15),
       ),
       onPressed: () {
