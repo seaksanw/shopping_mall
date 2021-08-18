@@ -44,32 +44,35 @@ class _SellerServiceState extends State<SellerService> {
       appBar: AppBar(
         title: Text('ผู้ขาย user account : $user'),
       ),
-      drawer: Drawer(
-        child: Stack(
-          children: [
-            ListView(
-              children: [
-                UserAccountsDrawerHeader(
-                    accountName: ListTile(
-                      leading: Icon(
-                        Icons.person_rounded,
-                        color: MyConstant.light,
-                      ),
-                      title: ShowTitle(
-                          title: '$user',
-                          textStyle: MyConstant().h3WhiteStyle()),
-                    ),
-                    accountEmail: null),
-                showCustomerOrder(),
-                showMangeShop(),
-                showProducts(),
-              ],
-            ),
-            ShowSignOut(),
-          ],
-        ),
-      ),
+      drawer: buildDrawer(),
       body: body[indexBody],
+    );
+  }
+
+  Drawer buildDrawer() {
+    return Drawer(
+      child: Stack(
+        children: [
+          ListView(
+            children: [
+              UserAccountsDrawerHeader(
+                  accountName: ListTile(
+                    leading: Icon(
+                      Icons.person_rounded,
+                      color: MyConstant.light,
+                    ),
+                    title: ShowTitle(
+                        title: '$user', textStyle: MyConstant().h3WhiteStyle()),
+                  ),
+                  accountEmail: null),
+              showCustomerOrder(),
+              showMangeShop(),
+              showProducts(),
+            ],
+          ),
+          ShowSignOut(),
+        ],
+      ),
     );
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:shopping_mall/utility/my_constant.dart';
 
 class AccountData {
+  String? id;
   String? displayName;
   String? userType;
   String? addr;
@@ -13,7 +14,8 @@ class AccountData {
   String? lng;
   String? photoUrl;
   AccountData(
-      {this.displayName,
+      {this.id,
+      this.displayName,
       this.userType,
       this.addr,
       this.tel,
@@ -26,10 +28,11 @@ class AccountData {
 
   @override
   String toString() {
-    return 'displayName:$displayName,userType:$userType,addr:$addr,tel:$tel,email:$email,user:$user,password:$password,lat:$lat,lng:$lng:photoUrl:$photoUrl';
+    return 'id:$id,displayName:$displayName,userType:$userType,addr:$addr,tel:$tel,email:$email,user:$user,password:$password,lat:$lat,lng:$lng:photoUrl:$photoUrl';
   }
 
   factory AccountData.formatFromJason(Map<String, dynamic> json) => AccountData(
+      id: json['id'],
       displayName: json['name'],
       userType: json['type'],
       addr: json['address'],

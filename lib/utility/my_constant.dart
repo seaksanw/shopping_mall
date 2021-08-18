@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 enum SingingCharacter { buyer, seller, rider }
 
 class MyConstant {
-  static String serverAddr = 'http://192.168.1.111';
+  static String serverAddr = 'http://192.168.1.109';
 
   static String appName = 'Shopping Mall';
 
@@ -14,6 +14,7 @@ class MyConstant {
   static String routeSellerService = 'seller_service';
   static String routeAddProducts = 'add_products';
 
+  static String imageTrash = 'assets/images/delete_garbage_icon.png';
   static String image1 = 'assets/images/image1.png';
   static String image2 = 'assets/images/image2.png';
   static String image3 = 'assets/images/image3.png';

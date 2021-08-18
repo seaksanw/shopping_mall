@@ -122,11 +122,14 @@ class _AuthenState extends State<Authen> {
   Future<void> userAuthen({String? user, String? password}) async {
     //String alertMassage = 'ERR:0001';
     String urlString =
-        '${MyConstant.serverAddr}/shoppingmall/getUserWhereUser.php?isAdd=true&user=$user'; //192.168.1.109
+        '${MyConstant.serverAddr}/shoppingmall/getUserWhereUser.php?isAdd=true&user=$user';
+    MyDialog().progressDialog(context); // Add progressDialog (circulaprogress)
+    String valueTemp = '';
     try {
       await Dio().get(urlString).then((value) async {
         print(value);
-        if (value.toString() != 'null') {
+        if (value.toString() != 'null' && value.data.indexOf('Error') < 0) {
+          valueTemp = value.data;
           //ต้องแปลงเป็น string (หรือใช้ value.data != 'null') แล้ว check กับ string 'null' ไม่ใช่ null
           print('Has User data');
           var jsonData = json.decode(value.toString())[0];
@@ -134,12 +137,15 @@ class _AuthenState extends State<Authen> {
           print('password : ${jsonData['password']}');
           if (password == jsonData['password']) {
             print(accountData);
-            //Navigator.pushNamed(context, MyConstant.routeBuyerService);
 
+            Navigator.pop(context); // remove progressDialog (circulaprogress)
             SharedPreferences preferences =
                 await SharedPreferences.getInstance();
             preferences.setString('type', accountData.userType.toString());
             preferences.setString('user', accountData.user.toString());
+            print(
+                'authen idUser-------------------->${accountData.id.toString()}');
+            preferences.setString('idUser', accountData.id.toString());
 
             switch (accountData.userType) {
               case 'buyer':
@@ -161,20 +167,27 @@ class _AuthenState extends State<Authen> {
             }
           } else {
             //alertMassage = 'Password is invalid';
+            Navigator.pop(context); // remove progressDialog (circulaprogress)
             MyDialog()
                 .normalShowDialog(context, 'Login fail', 'Password is invalid');
           }
         } else {
           print('Don\'t have User data');
           //alertMassage = 'User\'s not found';
-          MyDialog()
-              .normalShowDialog(context, 'Login fail', 'User\'s not found');
+          Navigator.pop(context); // remove progressDialog (circulaprogress)
+          MyDialog().normalShowDialog(
+              context, 'Login fail', 'User\'s not found ( ${value.data} )');
         }
       });
     } on DioError catch (e) {
       print('authen------>throw exception');
       print(e.message);
+      Navigator.pop(context); // remove progressDialog (circulaprogress)
       MyDialog().normalShowDialog(context, 'Connection fail', e.message);
+    } on FormatException catch (e) {
+      Navigator.pop(context);
+      MyDialog()
+          .normalShowDialog(context, 'Error', e.message + " or " + valueTemp);
     }
   }
 

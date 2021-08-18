@@ -107,12 +107,23 @@ class _AddProductsState extends State<AddProducts> {
             context, 'Image missing', 'Pleasa,compleate all 4 images');
       } else {
         MyDialog().progressDialog(context);
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        String? user = preferences.getString('user');
+        String? idSeller = preferences.getString('idUser');
+        String product = productNameController.text;
+        String price = productPriceController.text;
+        String barcode = productBarCodeController.text;
+        String detail = productDetailController.text;
+        String apiInsertProduct =
+            '${MyConstant.serverAddr}/shoppingmall/insertProduct.php';
         String apiUploadImages =
             '${MyConstant.serverAddr}/shoppingmall/saveProduct.php';
         int prefix = Random().nextInt(100000);
+        List<String> imagesURL = [];
         for (var image in files) {
           String imageFileName =
-              '${user}_${prefix}_${DateTime.now().microsecondsSinceEpoch.toString()}.jpg';
+              '${user}(${files.indexOf(image)})_${prefix}_${DateTime.now().microsecondsSinceEpoch.toString()}.jpg';
+          imagesURL.add('/shoppingmall/products/$imageFileName');
           print(image);
           print(imageFileName);
           Map<String, dynamic> map = Map();
@@ -125,6 +136,16 @@ class _AddProductsState extends State<AddProducts> {
             MyDialog().normalShowDialog(context, 'Upload file Fail',
                 '${e.message.substring(0, 100)}...');
           }
+        }
+        String filesPath = imagesURL.toString();
+        try {
+          await Dio()
+              .post(
+                  '$apiInsertProduct?isAdd=true&idSeller=$idSeller&nameSeller=$user&name=$product&price=$price&barcode=$barcode&detail=$detail&images=$filesPath')
+              .then((value) => Navigator.pop(context));
+        } on DioError catch (e) {
+          MyDialog().normalShowDialog(context, 'Insert Product data Fail',
+              '${e.message.substring(0, 100)}...');
         }
         Navigator.pop(
             context); //remove progressDialog after transfer files success
